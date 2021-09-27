@@ -1,0 +1,465 @@
+  for (int i = 1; i <= 4; i++){
+    switch(i)
+    {
+      case 1: std::cout << "En el nivel " << "El nombre de tu enemigo es "<< "Maestro Gerardo \n";
+      case 2: std::cout << "En este nivel, el nombre de tu enemigo es "<< "Maestra María de la Concepción de la Vírgen María de Cristo Redentor \n";
+      case 3: std::cout << "En este nivel, el nombre de tu enemigo es "<< "Camren, señora de la limpieza \n";
+      case 4: std::cout << "En este nivel, el nombre de tu enemigo es "<< "Cruella de Vill, el director \n";
+    }
+  break;
+  }
+
+bool Secretdoor::resolveLevel(Student *student){
+  if (levels[currentlevel]->getLtype() == LEVEL){
+    return resolveBasicLevel();
+  }
+  else if (levels[currentlevel]->getLtype() == EQUESTION){
+    return resolveEquestion();
+  }
+  else if (levels[currentlevel]->getLtype() == QUESTION){
+    return resolveQuestion();
+  }
+}
+
+
+//secretdoor original
+#include "secretdoor.h"
+
+Secretdoor::Secretdoor()
+ : currentlevel(0){
+   NormalQuestion *question; 
+   Equestion *equestion;
+  levels[0] = new NormalQuestion (QUESTION, 1,  "Area de un círculo de radio 3", 1, "En tu primer nivel, te encuentras en la cafetería, no hay nadie, solo están las mesas y las sillas, por lo que te sientes con miedo, por saber que va a pasar, de pronto a tu derecha encuentras un cartel que te pregunta algo ");
+  levels [1] =  new Equestion (EQUESTION, 3, "¿Cuál es el resultado de multiplicar 38 * 450? ", 1, "Después de contestar la otra pregunta, llega tu maestro a hacerte una pregunta, si respondes correctamente te proporcionará dinero, de lo contrario te bajará vida y escudo ", "Maestro Gerardo");
+  levels [2] =  new NormalQuestion (QUESTION, 2, "Área de un cuadrado que tiene 6 cm de lado", 1, "Estás en la cafeteria de la escuela, y de pronto aparece una pregunta en un cartel, que dice...."); 
+  levels [3] = new Equestion (EQUESTION, 3, "¿Cuál es el resultado de multiplicar 38 * 450? ", 1, "Después de contestar la otra pregunta, llega tu maestro a hacerte una pregunta, si respondes correctamente te proporcionará dinero, de lo contrario te bajará vida y escudo ", "Maestro Gerardo");
+  levels [4] = new NormalQuestion (QUESTION, 2, "Área de un cuadrado que tiene 6 cm de lado", 1, "Estás en la cafeteria de la escuela, y de pronto aparece una pregunta en un cartel, que dice....");
+  levels [5] =  new Equestion (EQUESTION, 3, "¿Cuál es el resultado de multiplicar 38 * 450? ", 1, "Después de contestar la otra pregunta, llega tu maestro a hacerte una pregunta, si respondes correctamente te proporcionará dinero, de lo contrario te bajará vida y escudo ", "Maestro Gerardo");
+}
+
+
+Secretdoor::Secretdoor( int Cl)
+ : currentlevel(Cl){
+  levels[0] = new NormalQuestion (QUESTION, 1,  "Area de un círculo de radio 3", 1, "En tu primer nivel, te encuentras en la cafetería, no hay nadie, solo están las mesas y las sillas, por lo que te sientes con miedo, por saber que va a pasar, de pronto a tu derecha encuentras un cartel que te pregunta algo ");
+  levels [1] =  new Equestion (EQUESTION, 3, "¿Cuál es el resultado de multiplicar 38 * 450? ", 1, "Después de contestar la otra pregunta, llega tu maestro a hacerte una pregunta, si respondes correctamente te proporcionará dinero, de lo contrario te bajará vida y escudo ", "Maestro Gerardo");
+  levels [2] =  new NormalQuestion (QUESTION, 2, "Área de un cuadrado que tiene 6 cm de lado", 1, "Estás en la cafeteria de la escuela, y de pronto aparece una pregunta en un cartel, que dice...."); 
+  levels [3] = new Equestion (EQUESTION, 3, "¿Cuál es el resultado de multiplicar 38 * 450? ", 1, "Después de contestar la otra pregunta, llega tu maestro a hacerte una pregunta, si respondes correctamente te proporcionará dinero, de lo contrario te bajará vida y escudo ", "Maestro Gerardo");
+  levels [4] = new NormalQuestion (QUESTION, 2, "Área de un cuadrado que tiene 6 cm de lado", 1, "Estás en la cafeteria de la escuela, y de pronto aparece una pregunta en un cartel, que dice....");
+  levels [5] =  new Equestion (EQUESTION, 3, "¿Cuál es el resultado de multiplicar 38 * 450? ", 1, "Después de contestar la otra pregunta, llega tu maestro a hacerte una pregunta, si respondes correctamente te proporcionará dinero, de lo contrario te bajará vida y escudo ", "Maestro Gerardo");
+}
+
+
+  
+Secretdoor::Secretdoor(const Secretdoor &secretdoor)
+ : currentlevel(secretdoor.currentlevel){
+    for (int  i = 0; i < 6; i ++){
+      if (secretdoor.levels[i]->getLtype() == LEVEL){
+        levels[i] = new Level(*secretdoor.levels[i]);
+      } 
+      else if (secretdoor.levels[i]->getLtype() == EQUESTION) {
+        levels[i] = new Equestion (*secretdoor.levels[i]);
+      }
+      else if(secretdoor.levels[i]->getLtype() == QUESTION){
+        levels[i] = new NormalQuestion (*secretdoor.levels[i]);
+
+      } 
+    }
+}
+ //PONER EL TYPE
+
+int Secretdoor::getCurrentLevel() const{
+  return currentlevel;
+}
+
+void Secretdoor::setCurrentLevel(int Cl){
+  currentlevel = Cl;
+}
+
+std::string Secretdoor::toString() const {
+  std::stringstream aux;   //Forma de concatenar en un arreglo
+  
+  aux << "Bienvenido, espero que estés listo para empezar tu aventura, actualmente te encuentras en el nivel =" << " " << currentlevel << std::endl; //preguntar como puede actualizar por cada vez que cambie de nivel
+  return aux.str();
+}
+
+void Secretdoor::startGame() const{
+  int j;
+  std::cout << "¿Estás listo para comenzar?, de 1 al 10, que tan listo estás, ponlo a continuación \n";
+  std::cin >> j;
+  if (j <= 10 && j >= 1){
+    std::cout << "Con todos los conocimientos de tus clases de matemáticas podrás regresar a la normalidad, confía en ti \n";
+  }
+  else {
+    std::cout << "Te quedarás aquí para siempre....";
+  }
+}
+
+void Secretdoor::nextLevel() const{
+  std::cout << "Ahora estás en el siguiente nivel, ¿Listo para las nuevas preguntas? \n";
+}
+
+void Secretdoor::endGame() const{
+  std::cout << "Tienes que terminar el juego para poder regresar a la normalidad \n";
+}
+
+
+bool Secretdoor::resolveLevel(Student *student){
+  if (levels[currentlevel]->getLtype() == LEVEL){
+    return resolveBasicLevel(student);
+  }
+  else if (levels[currentlevel]->getLtype() == EQUESTION){
+    return resolveEquestion(student);
+  }
+  else if (levels[currentlevel]->getLtype() == QUESTION){
+    return resolveQuestion(student);
+  }
+}
+
+bool Secretdoor::resolveBasicLevel(Student *student){
+  student = new Student (100, 0, 0, student->getName(), 0);
+  student->toString(); 
+}
+
+bool Secretdoor::resolveQuestion(Student *student){
+  int c;
+  Level *a;
+  NormalQuestion nq;
+  Secretdoor sd;
+  Type QUESTION;
+  a->getLtype();
+  a = levels[0];
+  student = new Student (100, 0, 0, student->getName(), 0);
+  std::cout << student->toString();
+  startGame(); //secretdoor
+  std::cout << "\n";
+  std::cout << toString(); //secretdoor
+  std::cout << "\n";
+  std::cout << levels[0]->getHistory();
+  std::cout << "\n";
+  std::cout << "El cartel dice: \n";
+  std::cout << levels[0]->getQuestion();
+  std::cout << "\n";
+  a->chooseOption();
+  std::cout << "Ingresa la opción que elegiste \n";
+  std::cin >> c;
+  if (levels[0]->getCorrect() == c ){
+    student->increaseScore();
+    student->increaseMoney();
+    std::cout << "Tu puntaje:  ";
+    std::cout << student->getScore();
+    std::cout << "\n";
+    std::cout << "Tu dinero: " << student->getMoney() << " monedas \n";
+  }
+}
+//me faltan dos niveles y agregar la tienda
+
+bool Secretdoor::resolveEquestion(Student *student){
+  std::cout << "q";
+}
+
+
+
+
+
+
+
+
+//main original
+#include <iostream>
+#include "student.h"
+#include "store.h"
+#include "secretdoor.h"
+#include "level.h"
+#include "equestion.h"
+#include "question.h"
+
+int main(int argc, char* argv[]) { 
+  //Método para preguntar nombre
+  
+  
+  //Constructor para asigmar los valores iniciales del estudiante
+
+
+  //NormalQuestion nq;
+  //int id =  nq.getId();
+  //nq.setId(id);
+  //std::cout << id;
+
+
+  //Equestion eq;
+  //std::string enemyName = eq.getEnemyName();
+  //eq.setEnemyName(enemyName);
+  //std::cout << enemyName;
+
+  //Secretdoor a;
+  //a.startGame();
+  //std::cout << a.toString();
+
+  Student *student;
+  Secretdoor a;
+  a.resolveQuestion(student);
+
+
+  //cambiarlos a mi secretdoor
+  //Store store;
+  //std::cout << store.toString();
+  //store.CheckShieldCost();
+  //store.BuyShield(); 
+  
+  return 0;
+}
+
+/*************************************************************
+* File: secretdoor.cpp
+* Author: Andrea González Arredondo
+* Description: This file contains the implementation  of         
+               Secretdoor class.
+*
+* Copyright (c) 2021 by Tecnologico de Monterrey.
+* All Rights Reserved. May be reproduced for any non-commercial
+* purpose.
+*************************************************************/
+//secretdoor original
+#include "secretdoor.h"
+
+Secretdoor::Secretdoor()
+ : currentlevel(0){
+  levels[0] = new NormalQuestion (QUESTION, 1,  "Area de un círculo de radio 3", 1, "En tu primer nivel, te encuentras en la cafetería, no hay nadie, solo están las mesas y las sillas, por lo que te sientes con miedo, por saber que va a pasar, de pronto a tu derecha encuentras un cartel que tiene algo escrito ");
+  levels [1] =  new Equestion (EQUESTION, 3, "¿Cuál es el resultado de multiplicar 38 * 450? ", 1, "Llega tu maestro a hacerte una pregunta, si respondes correctamente te proporcionará dinero, de lo contrario te bajará vida y escudo ", "Maestro Gerardo");
+  levels [2] =  new NormalQuestion (QUESTION, 2, "Tu mamá fue al súper y compró 53 focos ahorradores para tu casa, fue un total de 4589 pesos, perdió el ticket de compra, por lo que te pidió que calcules el costo de cada foco, para poder saber si le dieron bien el cambio ", 1, "Después de que pasaste por la cafetería, a tu derecha se abrió una puerta que te llevo directamente al salón de audiovisual, donde encontraste una nota con un problema escrito que dice...."); 
+  levels [3] = new Equestion (EQUESTION, 3, "¿Cuál es el resultado de multiplicar 38 * 450? ", 1, "Después de contestar la otra pregunta, llega tu maestro a hacerte una pregunta, si respondes correctamente te proporcionará dinero, de lo contrario te bajará vida y escudo ", "Maestro Gerardo");
+  levels [4] = new NormalQuestion (QUESTION, 2, "Suma de quebrados de 5/8 + 9/6 ", 1, "Ahora estas en el nivel 3, caminas en dirección este, hasta llegar a la puerta de la capilla de tu escuela, entrando ves un libro abierto, donde está escrito tu siguiente desafío matemático");
+  levels [5] =  new Equestion (EQUESTION, 3, "¿Cuál es el resultado de multiplicar 38 * 450? ", 1, "Después de contestar la otra pregunta, llega tu maestro a hacerte una pregunta, si respondes correctamente te proporcionará dinero, de lo contrario te bajará vida y escudo ", "Maestro Gerardo");
+}
+
+
+Secretdoor::Secretdoor( int Cl)
+ : currentlevel(Cl){
+  levels[0] = new NormalQuestion (QUESTION, 1,  "Area de un círculo de radio 3", 1, "En tu primer nivel, te encuentras en la cafetería, no hay nadie, solo están las mesas y las sillas, por lo que te sientes con miedo, por saber que va a pasar, de pronto a tu derecha encuentras un cartel que tiene algo escrito ");
+  levels [1] =  new Equestion (EQUESTION, 3, "¿Cuál es el resultado de multiplicar 38 * 450? ", 1, "Llega tu maestro a hacerte una pregunta, si respondes correctamente te proporcionará dinero, de lo contrario te bajará vida y escudo ", "Maestro Gerardo");
+  levels [2] =  new NormalQuestion (QUESTION, 2, "Tu mamá fue al súper y compró 53 focos ahorradores para tu casa, fue un total de 4589 pesos, perdió el ticket de compra, por lo que te pidió que calcules el costo de cada foco, para poder saber si le dieron bien el cambio ", 1, "Después de que pasaste por la cafetería, a tu derecha se abrió una puerta que te llevo directamente al salón de audiovisual, donde encontraste una nota con un problema escrito que dice...."); 
+  levels [3] = new Equestion (EQUESTION, 3, "¿Cuál es el resultado de multiplicar 38 * 450? ", 1, "Después de contestar la otra pregunta, llega tu maestro a hacerte una pregunta, si respondes correctamente te proporcionará dinero, de lo contrario te bajará vida y escudo ", "Maestro Gerardo");
+  levels [4] = new NormalQuestion (QUESTION, 2, "Suma de quebrados de 5/8 + 9/6 ", 1, "Ahora estas en el nivel 3, caminas en dirección este, hasta llegar a la puerta de la capilla de tu escuela, entrando ves un libro abierto, donde está escrito tu siguiente desafío matemático");
+  levels [5] =  new Equestion (EQUESTION, 3, "¿Cuál es el resultado de multiplicar 38 * 450? ", 1, "Después de contestar la otra pregunta, llega tu maestro a hacerte una pregunta, si respondes correctamente te proporcionará dinero, de lo contrario te bajará vida y escudo ", "Maestro Gerardo");
+}
+
+
+  
+Secretdoor::Secretdoor(const Secretdoor &secretdoor)
+ : currentlevel(secretdoor.currentlevel){
+    for (int  i = 0; i < 6; i ++){
+      if (secretdoor.levels[i]->getLtype() == LEVEL){
+        levels[i] = new Level(*secretdoor.levels[i]);
+      } 
+      else if (secretdoor.levels[i]->getLtype() == EQUESTION) {
+        levels[i] = new Equestion (*secretdoor.levels[i]);
+      }
+      else if(secretdoor.levels[i]->getLtype() == QUESTION){
+        levels[i] = new NormalQuestion (*secretdoor.levels[i]);
+
+      } 
+    }
+}
+ //PONER EL TYPE
+
+int Secretdoor::getCurrentLevel() const{
+  return currentlevel;
+}
+
+void Secretdoor::setCurrentLevel(int Cl){
+  currentlevel = Cl;
+}
+
+std::string Secretdoor::toString() const {
+  std::stringstream aux;   //Forma de concatenar en un arreglo
+  
+  aux << "Bienvenido, espero que estés listo para empezar tu aventura, actualmente te encuentras en el nivel =" << " " << currentlevel << std::endl; //preguntar como puede actualizar por cada vez que cambie de nivel
+  return aux.str();
+}
+
+void Secretdoor::startGame() const{
+  int j;
+  std::cout << "¿Estás listo para comenzar?, de 1 al 10, que tan listo estás, ponlo a continuación \n";
+  std::cin >> j;
+  if (j <= 10 && j >= 1){
+    std::cout << "Con todos los conocimientos de tus clases de matemáticas podrás regresar a la normalidad, confía en ti \n";
+  }
+  else {
+    std::cout << "Te quedarás aquí para siempre....";
+  }
+}
+
+void Secretdoor::nextLevel() const{
+  std::cout << "Ahora estás en el siguiente nivel, ¿Listo para las nuevas preguntas? \n";
+}
+
+void Secretdoor::endGame() const{
+  std::cout << "Tienes que terminar el juego para poder regresar a la normalidad \n";
+}
+
+
+bool Secretdoor::resolveLevel(Student *student){
+  if (levels[currentlevel]->getLtype() == LEVEL){
+    return resolveBasicLevel(student);
+  }
+  else if (levels[currentlevel]->getLtype() == EQUESTION){
+    return resolveEquestion(student);
+  }
+  else if (levels[currentlevel]->getLtype() == QUESTION){
+    return resolveQuestion(student);
+  }
+}
+
+bool Secretdoor::resolveBasicLevel(Student *student){
+  student = new Student (100, 0, 0, student->getName(), 0);
+  student->toString(); 
+}
+
+
+bool Secretdoor::resolveQuestion(Student *student){
+  //variables y objetos a utilizar
+  int c;
+  Level *a;
+  Store b;
+  NormalQuestion nq;
+  Secretdoor sd;
+  Type QUESTION;
+  //Como se contestará cada pregunta
+  levels[0]->getLtype();
+  levels[2]->getLtype();
+  levels[4]->getLtype();
+  std::cout << student->toString();
+  startGame(); //secretdoor
+  std::cout << "\n";
+  std::cout << toString(); //secretdoor
+  std::cout << "\n";
+  std::cout << levels[0]->getHistory();
+  std::cout << "\n";
+  std::cout << "El cartel dice: \n";
+  std::cout << levels[0]->getQuestion();
+  std::cout << "\n\n";
+  std::cout <<  "Opción 1= 28.27  Opción = 9  Opción 3 = 27.89 \n";
+  a->chooseOption();
+  std::cout << "Ingresa la opción que elegiste \n";
+  std::cin >> c;
+  if (levels[0]->getCorrect() == c ){
+    student->increaseScore();
+    student->increaseMoney();
+    std::cout << "Tu puntaje:  ";
+    std::cout << student->getScore();
+    std::cout << "\n";
+    std::cout << "Tu dinero: " << student->getMoney() << " monedas \n \n";
+  } else {
+    std::cout << "Respuesta incorrecta " << "\n";
+     while (student->getScore() != 0){
+        student->decreaseScore();
+        std::cout << "El puntaje que te queda es: " << student->getScore() << "\n \n";
+        break;
+      } 
+  }
+
+  std::cout << levels[2]->getHistory();
+  std::cout << "\n";
+  std::cout << "La nota dice: \n";
+  std::cout << levels[2]->getQuestion();
+  std::cout << "\n\n";
+  std::cout << "Opción 1 = 92.50  Opción 2 = 88.25  Opción 3 = 90.89";
+  std::cout << "\n";
+  a->chooseOption();
+  std::cout << "Ingresa la opción que elegiste \n";
+  std::cin >> c;
+  if (levels[2]->getCorrect() == c ){
+    student->increaseScore();
+    student->increaseMoney();
+    std::cout << "Tu puntaje:  ";
+    std::cout << student->getScore();
+    std::cout << "\n";
+    std::cout << "Tu dinero: " << student->getMoney() << " monedas \n \n";
+  } else {
+    std::cout << "Respuesta incorrecta " << "\n";
+     while (student->getScore() != 0){
+        student->decreaseScore();
+        std::cout << "El puntaje que te queda es: " << student->getScore() << "\n \n";
+        break;
+      } 
+  } 
+
+
+  std::cout << levels[4]->getHistory();
+  std::cout << "\n";
+  std::cout << "El problema del libro dice: \n";
+  std::cout << levels[4]->getQuestion();
+  std::cout << "\n\n";
+  std::cout << "Opción 1 = 16/9  Opción 2 = 17/8  Opción 3 = 9/12";
+  std::cout << "\n";
+  a->chooseOption();
+  std::cout << "Ingresa la opción que elegiste \n";
+  std::cin >> c;
+  if (levels[2]->getCorrect() == c ){
+    student->increaseScore();
+    student->increaseMoney();
+    std::cout << "Tu puntaje:  ";
+    std::cout << student->getScore();
+    std::cout << "\n";
+    std::cout << "Tu dinero: " << student->getMoney() << " monedas \n \n";
+  } else {
+    std::cout << "Respuesta incorrecta " << "\n";
+     while (student->getScore() != 0){
+        student->decreaseScore();
+        std::cout << "El puntaje que te queda es: " << student->getScore() << "\n \n";
+        break;
+      } 
+
+    }
+  std::cout << "Estás a la mitad del juego, tendrás oportunidad de comprar escudo, ya que en los próximos niveles te enfrenatarás a tus maestros, que te podrán diferentes preguntas matemáticas, cada vez serán más difíciles.... \n";
+  std::cout << b.toString() << "\n" ;
+  b.CheckShieldCost();
+  if (student->getMoney() >= 100){
+      b.BuyShield();
+      student->increaseShield();
+      student->decreaseMoney();
+      std::cout << "Escudo actual = " << student ->getShield() << "\n \n"; 
+  } else {
+    std::cout << "No tienes dinero suficiente para comprar en al tienda, así que tendrás que seguir sin escudo \n \n";
+  }
+}
+ 
+
+bool Secretdoor::resolveEquestion(Student *student){
+  int co;
+  Level *l;
+  Equestion *eq;
+  Type EQUESTION;
+
+  //Niveles dependiendo del tipo
+  levels[1]->getLtype();
+  levels[3]->getLtype();
+  levels[5]->getLtype();
+  //creando un nuevo estudiante con los datos anteriores
+
+  std::cout << "\n";
+  std::cout << levels[1]->getHistory();
+  std::cout << "\n";
+  std::cout << "El maestro comienza a hablar y te pregunta: \n";
+  std::cout << levels[1]->getQuestion();
+  std::cout << "\n\n";
+  std::cout << "Opción 1 = 15,600  Opción 2 = 17,500  Opción 3 = 17,100";
+  std::cout << "\n";
+  l->chooseOption();
+  std::cout << "Ingresa la opción que elegiste \n";
+  std::cin >> co;
+  if (levels[1]->getCorrect() == co ){
+    //error en llamar métodos, para aumentar o disminuir el dinero, y lo demás
+    //marca un segmetation fault
+    student->increaseMoney();
+    std::cout << student->getMoney();
+  } 
+  else {
+    std::cout << "Respuesta incorrecta :( \n";
+  }
+}
+
+
+
+Student *s;
+//Variables y objetos a utilizar
